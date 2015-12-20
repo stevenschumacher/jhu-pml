@@ -1,22 +1,30 @@
 ---
 title: "Practical Machine Learning Course Project"
 author: "Steven Schumacher"
-date: "December 10, 2015"
-output: html_document
+date: "December 20, 2015"
+output: 
+  html_document: 
+    keep_md: yes
 ---
-
-This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
-
-When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
-
-```{r}
-summary(cars)
+### Data Characterization
+```{r, echo=FALSE}
+library(data.table)
+training <- fread("~/Dropbox/personal/educational/JohnsHopkins_PracticalMachineLearning/pml-training.csv")
 ```
+The training data set consists of 406 individual high-resolution time series of 52-channel measurements taken on six subjects ('user_name' column) exercising in five different ways ('classe' column) for a total of 19622 data points. The last point of each series contains additional summary data which are placed in 100 additional columns which are blank, NA or the MS Excel error value '#DIV/0!'. The test data appear to be random samplings of these kinds of time series (without summary data) for the same subjects. Therefore, much of the information that could be gleaned from the point to point motion is lost. 
 
-You can also embed plots, for example:
+
+Here are the number of time series of each class from each subject
 
 ```{r, echo=FALSE}
-plot(cars)
+table(training[!is.na(training$max_roll_belt),.(user_name,classe)])
 ```
 
-Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
+Here are the number of raw data points:
+
+```{r, echo=FALSE}
+table(training[,.(user_name,classe)])
+```
+### Logistics
+
+We randomly selected out 20% of the raw data points as a working test set for estimating the out of sample error (treating the given testing set as a validation set).

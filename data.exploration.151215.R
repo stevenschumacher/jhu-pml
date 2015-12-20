@@ -35,20 +35,10 @@ unique(apply(training[!is.na(avg_yaw_forearm),],2,function(x) sum(is.na(x))))
 
 cols.with.nas <- unlist(lapply(training,function(x) any(is.na(x))))
 sum(cols.with.nas)
-# 67
-rows.with.nas <- is.na(training$var_yaw_forearm)
+sum(col.div0.counts>0)
+# 33
+sum(cols.with.blanks[col.div0.counts>0])
+# 33 # i.e. all of the columns with div0 errors also contain a large number of blanks
 
-
-## there are also columns with same large number of blanks
-unique(apply(training,2,function(x) sum(x=="")))
-# 0 19216 NA
-unique(apply(training[amplitude_yaw_forearm!="",],2,function(x) sum(x=="")))
-#  0
-cols.with.blanks <- unlist(lapply(training,function(x) any(x=="")))
-cols.with.blanks[cols.with.nas] <- FALSE
-sum(cols.with.blanks)
-#  33
-rows.with.blanks <- training$amplitude_yaw_forearm==""
-
-sum(rows.with.nas==rows.with.blanks)
-# 19622
+## create reduced data set that eliminates incomplete columns
+train2 <- data.frame(training)[which(!(cols.with.nas|cols.with.blanks))]
